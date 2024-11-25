@@ -4,6 +4,7 @@
  */
 package br.com.fatec.controller;
 
+import br.com.fatec.App;
 import br.com.fatec.dao.EspecializacaoDAO;
 import br.com.fatec.dao.MedicoDAO;
 import br.com.fatec.model.Especializacao;
@@ -29,6 +30,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
 /**
  * FXML Controller class
@@ -71,7 +74,8 @@ public class Tela_MedicosController implements Initializable {
     
     @FXML
     private ComboBox<Especializacao> cmbEspec;
-    
+    @FXML
+    private ImageView logo;
     
     //variaveis auxiliares
     private ObservableList<Especializacao> listaEspecializacao =  
@@ -80,8 +84,7 @@ public class Tela_MedicosController implements Initializable {
     private MedicoDAO medicoDAO = new MedicoDAO();
     private Medico medico;
     private boolean incluindo = true;
-    private String valorSelecionado;
-            
+    private String valorSelecionado;       
     /**
      * Initializes the controller class.
      */
@@ -93,7 +96,7 @@ public class Tela_MedicosController implements Initializable {
         tviewMedicos.setItems(preencherTabela());
         
         tableView_clique();
-        
+        logo.setOnMouseClicked(this::mostrarTelaPrincipal);
     }    
 
     @FXML
@@ -136,7 +139,7 @@ public class Tela_MedicosController implements Initializable {
         }
     }
 
-        @FXML
+    @FXML
     private void btnSalvar_Click(ActionEvent event) {
         // Verifica se os dados estão preenchidos
         if (!validarDados()) {
@@ -149,25 +152,34 @@ public class Tela_MedicosController implements Initializable {
         try {
             if (incluindo) { // Se a operação é de inclusão
                 if (medicoDAO.insere(medico)) {
-                    mensagem("Médico incluído com sucesso!"); // Ajustado para "Médico"
-                    limparDados(); // Limpa os campos após inclusão
-                    tviewMedicos.setItems(preencherTabela()); // Atualiza a tabela
+                    mensagem("Médico incluído com sucesso!");
+                    limparDados();
+                    // Adiciona o novo médico à lista e atualiza a tabela
+                    tviewMedicos.getItems().add(medico);
                 } else {
                     mensagem("Erro na Inclusão do Médico");
                 }
             } else { // Se a operação é de alteração
                 if (medicoDAO.altera(medico)) {
-                    mensagem("Médico alterado com sucesso!"); // Ajustado para "Médico"
-                    limparDados(); // Limpa os campos após alteração
-                    tviewMedicos.setItems(preencherTabela()); // Atualiza a tabela
+                    mensagem("Médico alterado com sucesso!");
+                    limparDados();
+                    atualizarTabela(medico);
                 } else {
                     mensagem("Erro na Alteração do Médico");
                 }
             }
         } catch (SQLException ex) {
-            // Exibe a mensagem de erro caso ocorra alguma exceção durante a gravação no banco
             mensagem("Erro na Gravação: " + ex.getMessage());
-            ex.printStackTrace(); // Adiciona um log da exceção
+            ex.printStackTrace();
+        }
+    }
+
+    public void mostrarTelaPrincipal(MouseEvent event) {
+        try {
+            // Troca a tela chamando o método setRoot da classe App
+            App.setRoot("br/com/fatec/view/Principal");
+        } catch (Exception ex) {
+            mensagem("Erro ao tentar voltar para tela principal: " + ex.getMessage());
         }
     }
     
@@ -181,6 +193,16 @@ public class Tela_MedicosController implements Initializable {
             mensagem(ex.getMessage());
         }
             
+    }
+    
+    // Método para encontrar o índice do médico na lista (TableView)
+    private int getMedicoIndex(int idMedico) {
+        for (int i = 0; i < tviewMedicos.getItems().size(); i++) {
+            if (tviewMedicos.getItems().get(i).getIdMedico() == idMedico) {
+                return i;
+            }
+        }
+        return -1; 
     }
     
     private void mensagem(String msg) {
@@ -226,6 +248,16 @@ public class Tela_MedicosController implements Initializable {
             return false;
         }
         return true;
+    }
+    
+        // Atualiza a tabela com os dados modificados de do cliente pelo ID
+    private void atualizarTabela(Medico clienteAlterado) {
+        int index = getMedicoIndex(clienteAlterado.getIdMedico());
+        if (index != -1) {
+            tviewMedicos.getItems().set(index, clienteAlterado);
+        } else {
+            mensagem("Cliente não encontrado na tabela para atualização.");
+        }
     }
     
     private void limparDados() {
