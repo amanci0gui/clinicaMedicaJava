@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package br.com.fatec.controller;
 
+import br.com.fatec.App;
 import br.com.fatec.dao.ClientesDAO;
 import br.com.fatec.model.Clientes;
 import java.net.URL;
@@ -11,30 +8,26 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
-
-
-/**
- * FXML Controller class
- *
- * @author Pichau
- */
 public class Tela_ClienteController implements Initializable {
 
     @FXML
@@ -61,16 +54,7 @@ public class Tela_ClienteController implements Initializable {
     private TextField txtId;
     @FXML
     private TableView<Clientes> tviewClientes;
-    
 
-    
-    //variaveis auxiliares
-    private ClientesDAO clientesDAO = new ClientesDAO();
-    private Clientes clientes;
-    private ObservableList<Clientes> listaClientes =
-            FXCollections.observableArrayList();
-    private boolean incluindo = true;
-    private String valorSelecionado;
     @FXML
     private Button btnPesquisar;
     @FXML
@@ -87,55 +71,52 @@ public class Tela_ClienteController implements Initializable {
     private TableColumn<Clientes, String> colPlano;
     @FXML
     private TableColumn<Clientes, String> colTelefone;
-
+    @FXML
+    private ImageView logo; // logo para voltar para tela principal
     
+    // Variáveis auxiliares
+    private ClientesDAO clientesDAO = new ClientesDAO();
+    private Clientes clientes;
+    private ObservableList<Clientes> listaClientes = FXCollections.observableArrayList();
+    private boolean incluindo = true;
+    private String valorSelecionado;
     
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         fazerLigacao();
         tviewClientes.setItems(preencheTabela());
-        
         tableView_clique();
-        
-    }    
+        logo.setOnMouseClicked(this::mostrarTelaPrincipal);
+    }
 
     @FXML
     private void btnSalvar_Click(ActionEvent event) {
-        //verifica se os dados estão preenchidos
-        if(validarDados() == false) {
+        if (!validarDados()) {
             return;
         }
-        
+
         clientes = carregar_Model();
-        
-        try{
-            if(incluindo) {
-                if(clientesDAO.insere(clientes)){
+
+        try {
+            if (incluindo) {
+                if (clientesDAO.insere(clientes)) {
                     mensagem("Cliente incluído com sucesso!!!");
                     limparDados();
                     tviewClientes.setItems(preencheTabela());
-                }
-                else {
+                } else {
                     mensagem("Erro na Inclusão");
                 }
-            }
-            else {
-                if(clientesDAO.altera(clientes)) {
+            } else {
+                if (clientesDAO.altera(clientes)) {
                     mensagem("Cliente atualizado com sucesso!!!");
                     limparDados();
-                    tviewClientes.setItems(preencheTabela());
-                }
-                else {
-                    mensagem("Erro na Inclusão");
+                    atualizarTabela(clientes);
+                } else {
+                    mensagem("Erro na Alteração");
                 }
             }
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             mensagem("Erro na Gravação\n" + ex.getMessage());
         }
     }
@@ -144,75 +125,88 @@ public class Tela_ClienteController implements Initializable {
     private void btnExcluir_Click(ActionEvent event) {
         clientes = new Clientes();
         clientes.setIdCliente(Integer.parseInt(txtId.getText()));
-        
-        try{
-            if(clientesDAO.remove(clientes)){
-                mensagem("Cliente excluído com Sucesso !!!");
+
+        try {
+            if (clientesDAO.remove(clientes)) {
+                mensagem("Cliente excluído com sucesso!!!");
                 limparDados();
                 tviewClientes.setItems(preencheTabela());
+            } else {
+                mensagem("Erro na exclusão");
             }
-            else{
-                mensagem("Ocorreu algum erro para exclusão");
-            }            
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             mensagem("Erro de Exclusão\n" + ex.getMessage());
         }
     }
-    
-        /**
-     * Testa se todos os campos estão preenchidos
-     * @return 
-     */
-    private boolean validarDados() {
-        if(txtNome.getText().length() == 0 ||
-                tipoGrupo.getSelectedToggle()== null ||
-                txtCpf.getText().length() == 0 || 
-                txtTelefone.getText().length() == 0) {
-            mensagem("Por favor, preencher todos os dados");
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    
-     private void mensagem(String msg) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle("Mensagem");
-        alerta.setHeaderText(msg);
-        alerta.setContentText("");
 
-        alerta.showAndWait(); //exibe a mensage
+    @FXML
+    private void btnPesquisar_Click(ActionEvent event) {
+        clientes = new Clientes();
+        clientes.setIdCliente(Integer.parseInt(txtId.getText()));
+
+        try {
+            clientes = clientesDAO.buscaID(clientes);
+
+            if (clientes != null) {
+                carregar_View(clientes);
+                incluindo = false;
+            } else {
+                mensagem("Cliente não encontrado");
+                txtNome.requestFocus();
+            }
+        } catch (SQLException ex) {
+            mensagem("Erro na procura do Cliente: " + ex.getMessage());
+        }
     }
-     
-    private Clientes carregar_Model(){
+    
+    public void mostrarTelaPrincipal(MouseEvent event) {
+        try {
+            // Troca a tela chamando o método setRoot da classe App
+            App.setRoot("br/com/fatec/view/Principal");
+        } catch (Exception ex) {
+            mensagem("Erro ao tentar voltar para tela principal: " + ex.getMessage());
+        }
+    }
+
+    private void carregar_View(Clientes model) {
+        txtNome.setText(model.getNomeCliente());
+        txtId.setText(String.valueOf(model.getIdCliente()));
+        txtCpf.setText(model.getCpf());
+        txtPlano.setText(model.getPlanoConv());
+        txtTelefone.setText(model.getTelefone());
+        dateCalendario.setValue(model.getDataNasc());
+    }
+
+    private Clientes carregar_Model() {
         Clientes model = new Clientes();
         model.setNomeCliente(txtNome.getText());
         model.setCpf(txtCpf.getText());
         model.setDataNasc(dateCalendario.getValue());
-        if (radioConvenio.isSelected()){
+        if (radioConvenio.isSelected()) {
             valorSelecionado = "C";
-        }
-        else{
+        } else {
             valorSelecionado = "P";
             txtPlano.setText("Não possui convênio");
         }
         model.setConvOuPart(valorSelecionado);
         model.setPlanoConv(txtPlano.getText());
         model.setTelefone(txtTelefone.getText());
-        if (txtId.getText().isEmpty()) {
-        model.setIdCliente(Integer.parseInt(txtId.getText()));
-    } else {
-        model.setIdCliente(0);  // ou outro valor default, caso não seja necessário um ID
-    }
-        
+        model.setIdCliente(txtId.getText().isEmpty() ? 0 : Integer.parseInt(txtId.getText()));
         return model;
     }
-    
 
-    public void limparDados() {
-        //limpa os campos
+    private boolean validarDados() {
+        if (txtNome.getText().isEmpty() ||
+                tipoGrupo.getSelectedToggle() == null ||
+                txtCpf.getText().isEmpty() ||
+                txtTelefone.getText().isEmpty()) {
+            mensagem("Por favor, preencher todos os dados");
+            return false;
+        }
+        return true;
+    }
+
+    private void limparDados() {
         txtNome.setText("");
         txtCpf.setText("");
         txtId.setText("");
@@ -220,48 +214,18 @@ public class Tela_ClienteController implements Initializable {
         txtTelefone.setText("");
         radioConvenio.setSelected(false);
         radioParticular.setSelected(false);
-        
-        //habilita a inclusão
-        //habilitarBotoes(true);
-        
-        //manda o foco para a placa
         txtNome.requestFocus();
     }
 
-    @FXML
-    private void btnPesquisar_Click(ActionEvent event) {
-        clientes = new Clientes();
-        clientes.setIdCliente(Integer.parseInt(txtId.getText()));
-        
-        try{
-            clientes = clientesDAO.buscaID(clientes);
-            
-            if(clientes != null){
-                carregar_View(clientes);
-                incluindo = false;
-                
-            } else {
-                mensagem("Cliente não encontrado");
-                txtNome.requestFocus();
-            }
-        } catch (SQLException ex) {
-            mensagem("Erro na procura do Cliente: " + 
-                    ex.getMessage());
-        }
+    private void mensagem(String msg) {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle("Mensagem");
+        alerta.setHeaderText(msg);
+        alerta.setContentText("");
+        alerta.showAndWait();
     }
-            
-    private void carregar_View(Clientes model) {
-        txtNome.setText(model.getNomeCliente());
-        txtId.setText(String.valueOf(model.getIdCliente()));
-        //faz selecionar o item na combo
-        txtCpf.setText(model.getCpf());
-        txtPlano.setText(model.getPlanoConv());
-        txtTelefone.setText(model.getTelefone());
-        dateCalendario.setValue(model.getDataNasc());
-        
-    }
-    
-    private void fazerLigacao(){
+
+    private void fazerLigacao() {
         colNome.setCellValueFactory(new PropertyValueFactory<>("nomeCliente"));
         colIdCliente.setCellValueFactory(new PropertyValueFactory<>("idCliente"));
         colCpf.setCellValueFactory(new PropertyValueFactory<>("cpf"));
@@ -269,40 +233,55 @@ public class Tela_ClienteController implements Initializable {
         colConvOuPart.setCellValueFactory(new PropertyValueFactory<>("convOuPart"));
         colPlano.setCellValueFactory(new PropertyValueFactory<>("planoConv"));
         colTelefone.setCellValueFactory(new PropertyValueFactory<>("telefone"));
-        
     }
-    
+
     private ObservableList<Clientes> preencheTabela() {
-       ClientesDAO dao = new ClientesDAO();
-        ObservableList<Clientes> clientesLista
-            = FXCollections.observableArrayList();
-        
+        ClientesDAO dao = new ClientesDAO();
+        ObservableList<Clientes> clientesLista = FXCollections.observableArrayList();
+
         try {
-            //busca somente que termina com 'a'
-            //proprietarios.addAll(dao.lista("nome like '%a'"));
-            //busca todo mundo
             clientesLista.addAll(dao.lista(""));
         } catch (SQLException ex) {
             Alert alerta = new Alert(Alert.AlertType.ERROR,
-                    "Erro Preenche Tabela: " + ex.getMessage(),
+                    "Erro Preenchendo Tabela: " + ex.getMessage(),
                     ButtonType.OK);
             alerta.showAndWait();
         }
-        
+
         return clientesLista;
     }
-    
-    private void tableView_clique(){
+
+    private void tableView_clique() {
         tviewClientes.setRowFactory(tv -> {
-        TableRow<Clientes> row = new TableRow<>();
-        row.setOnMouseClicked(event -> {
-            if (!row.isEmpty()) {
-                Clientes clienteSelecionado = row.getItem();
-                carregar_View(clienteSelecionado); // Preenche os campos com o cliente selecionado
-                incluindo = false; // Define que não está incluindo, mas editando
-            }
+            TableRow<Clientes> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    Clientes clienteSelecionado = row.getItem();
+                    carregar_View(clienteSelecionado);
+                    incluindo = false;
+                }
+            });
+            return row;
         });
-        return row;
-    });
+    }
+
+    // Atualiza a tabela com os dados modificados de do cliente pelo ID
+    private void atualizarTabela(Clientes clienteAlterado) {
+        int index = getClienteIndex(clienteAlterado.getIdCliente());
+        if (index != -1) {
+            tviewClientes.getItems().set(index, clienteAlterado);
+        } else {
+            mensagem("Cliente não encontrado na tabela para atualização.");
+        }
+    }
+
+    // Método para encontrar o índice do cliente na lista (TableView)
+    private int getClienteIndex(int idCliente) {
+        for (int i = 0; i < tviewClientes.getItems().size(); i++) {
+            if (tviewClientes.getItems().get(i).getIdCliente() == idCliente) {
+                return i;  // Retorna o índice do cliente na lista
+            }
+        }
+        return -1;
     }
 }
