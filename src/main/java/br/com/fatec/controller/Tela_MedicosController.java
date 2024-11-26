@@ -154,8 +154,7 @@ public class Tela_MedicosController implements Initializable {
                 if (medicoDAO.insere(medico)) {
                     mensagem("Médico incluído com sucesso!");
                     limparDados();
-                    // Adiciona o novo médico à lista e atualiza a tabela
-                    tviewMedicos.getItems().add(medico);
+                    tviewMedicos.setItems(preencheTabela());
                 } else {
                     mensagem("Erro na Inclusão do Médico");
                 }
@@ -203,6 +202,22 @@ public class Tela_MedicosController implements Initializable {
             }
         }
         return -1; 
+    }
+    
+        private ObservableList<Medico> preencheTabela() {
+        MedicoDAO dao = new MedicoDAO();
+        ObservableList<Medico> medicosLista = FXCollections.observableArrayList();
+
+        try {
+            medicosLista.addAll(dao.lista(""));
+        } catch (SQLException ex) {
+            Alert alerta = new Alert(Alert.AlertType.ERROR,
+                    "Erro Preenchendo Tabela: " + ex.getMessage(),
+                    ButtonType.OK);
+            alerta.showAndWait();
+        }
+
+        return medicosLista;
     }
     
     private void mensagem(String msg) {
