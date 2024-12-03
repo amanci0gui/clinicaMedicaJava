@@ -20,8 +20,10 @@ public class App extends Application {
     // Caminhos para views
     private static final String TELA_PRINCIPAL = "br/com/fatec/view/Principal";
     private static final String TELA_MEDICOS = "br/com/fatec/view/Tela_Medicos";
+    private static final String TELA_AVANCADA = "br/com/fatec/view/Tela_Avancada";
+    private static final String LISTA_ESPERA = "br/com/fatec/view/ListaDeEspera";
     private static final String TELA_PACIENTES = "br/com/fatec/view/Tela_Cliente";
-    private static final String TELA_CONSULTA = "br/com/fatec/view/Tela_Consulta";
+    private static final String TELA_CONSULTA = "br/com/fatec/view/Tela_Consultas";
 
     @Override
     public void start(Stage stage) throws IOException {
