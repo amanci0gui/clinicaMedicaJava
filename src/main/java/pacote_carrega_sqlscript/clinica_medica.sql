@@ -109,7 +109,7 @@ INSERT INTO `horarios` (`idHorario`, `horario`) VALUES
 CREATE TABLE `medico` (
   `idMedico` int(11) NOT NULL,
   `nomeMedico` varchar(100) DEFAULT NULL,
-  `crm` varchar(9) DEFAULT NULL,
+  `crm` varchar(11) DEFAULT NULL,
   `dataNasc` date DEFAULT NULL,
   `telefone` varchar(17) DEFAULT NULL,
   `idEspec` int(11) DEFAULT NULL
