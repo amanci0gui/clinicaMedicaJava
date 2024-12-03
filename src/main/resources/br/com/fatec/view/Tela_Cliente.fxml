@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane id="AnchorPane" prefHeight="716.0" prefWidth="1380.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.fatec.controller.Tela_ClienteController">
+    <stylesheets>
+        <URL value="@/br/com/fatec/view/styles/tela_cliente.css" />
+    </stylesheets>
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="716.0" layoutX="-3.0" stroke="BLACK" strokeType="INSIDE" width="175.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="78.0" layoutX="169.0" stroke="BLACK" strokeType="INSIDE" width="1213.0" />
+      <TextField fx:id="txtNome" layoutX="324.0" layoutY="163.0" prefHeight="37.0" prefWidth="201.0" promptText="Nome" />
+      <TextField fx:id="txtCpf" layoutX="691.0" layoutY="163.0" prefHeight="37.0" prefWidth="201.0" promptText="CPF" />
+      <DatePicker fx:id="dateCalendario" layoutX="1021.0" layoutY="163.0" prefHeight="37.0" prefWidth="207.0" />
+      <VBox layoutX="340.0" layoutY="246.0" prefHeight="200.0" prefWidth="168.0" spacing="30.0">
+         <children>
+            <RadioButton fx:id="radioConvenio" mnemonicParsing="false" prefHeight="51.0" prefWidth="168.0" text="Convênio">
+               <toggleGroup>
+                  <ToggleGroup fx:id="tipoGrupo" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="radioParticular" mnemonicParsing="false" prefHeight="44.0" prefWidth="178.0" text="Particular" toggleGroup="$tipoGrupo" />
+         </children>
+      </VBox>
+      <TextField fx:id="txtPlano" layoutX="691.0" layoutY="287.0" prefHeight="37.0" prefWidth="201.0" promptText="Plano" />
+      <TextField fx:id="txtTelefone" layoutX="1021.0" layoutY="287.0" prefHeight="37.0" prefWidth="201.0" promptText="Telefone" />
+      <Button fx:id="btnSalvar" layoutX="555.0" layoutY="392.0" mnemonicParsing="false" onAction="#btnSalvar_Click" prefHeight="44.0" prefWidth="168.0" text="Salvar" />
+      <Button fx:id="btnExcluir" layoutX="853.0" layoutY="392.0" mnemonicParsing="false" onAction="#btnExcluir_Click" prefHeight="44.0" prefWidth="168.0" text="Excluir" />
+      <TableView fx:id="tviewClientes" layoutX="421.0" layoutY="516.0" prefHeight="200.0" prefWidth="618.0">
+        <columns>
+          <TableColumn fx:id="colIdCliente" prefWidth="75.0" text="idCliente" />
+          <TableColumn fx:id="colNome" prefWidth="75.0" text="Nome" />
+            <TableColumn fx:id="colCpf" prefWidth="75.0" text="CPF" />
+            <TableColumn fx:id="colDataNasc" prefWidth="75.0" text="Data Nasc" />
+            <TableColumn fx:id="colConvOuPart" prefWidth="101.0" text="Conv ou Part" />
+            <TableColumn fx:id="colPlano" prefWidth="109.0" text="Plano Convenio" />
+            <TableColumn fx:id="colTelefone" prefWidth="106.0" text="Telefone" />
+        </columns>
+      </TableView>
+      <TextField fx:id="txtId" layoutX="214.0" layoutY="90.0" prefHeight="29.0" prefWidth="86.0" promptText="ID" />
+      <Button fx:id="btnPesquisar" layoutX="340.0" layoutY="90.0" mnemonicParsing="false" onAction="#btnPesquisar_Click" prefHeight="29.0" prefWidth="86.0" text="Pesquisar" />
+      <ImageView fx:id="logo" fitHeight="150.0" fitWidth="200.0" layoutX="14.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0">
+         <image>
+            <Image url="@../images/logo.jpg" />
+         </image>
+      </ImageView>
+      <Label layoutX="326.0" layoutY="141.0" text="Nome:" />
+      <Label layoutX="691.0" layoutY="141.0" text="CPF:" />
+      <Label layoutX="1021.0" layoutY="141.0" text="Data de Nascimento:" />
+      <Label layoutX="691.0" layoutY="270.0" text=" Plano:" />
+      <Label layoutX="1021.0" layoutY="270.0" text="Telefone:" />
+      <Label layoutX="684.0" layoutY="13.0" text="Pacientes" textFill="WHITE">
+         <font>
+            <Font name="SansSerif Bold" size="46.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

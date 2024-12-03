@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane id="AnchorPane" prefHeight="716.0" prefWidth="1380.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.fatec.controller.Tela_MedicosController">
+    <stylesheets>
+        <URL value="@/br/com/fatec/view/styles/tela_medicos.css" />
+    </stylesheets>
+   <children>
+      <Button fx:id="btnPesquisar" layoutX="336.0" layoutY="90.0" mnemonicParsing="false" onAction="#btnPesquisar_Click" prefHeight="29.0" prefWidth="86.0" text="Pesquisar" />
+      <TextField fx:id="txtIdMed" layoutX="210.0" layoutY="90.0" prefHeight="29.0" prefWidth="86.0" promptText="ID" />
+      <TableView fx:id="tviewMedicos" layoutX="463.0" layoutY="516.0" prefHeight="200.0" prefWidth="618.0">
+         <columns>
+            <TableColumn fx:id="colIdMed" prefWidth="58.0" text="idMedico" />
+            <TableColumn fx:id="colNomeMed" prefWidth="101.0" text="Nome" />
+            <TableColumn fx:id="colCrm" prefWidth="101.0" text="CRM" />
+            <TableColumn fx:id="colDataNasc" prefWidth="79.0" text="Data Nasc" />
+            <TableColumn fx:id="colEspec" prefWidth="143.0" text="Especializacao" />
+            <TableColumn fx:id="colTelefone" prefWidth="135.0" text="Telefone" />
+         </columns>
+      </TableView>
+      <Button fx:id="btnExcluir" layoutX="849.0" layoutY="392.0" mnemonicParsing="false" onAction="#btnExcluir_Click" prefHeight="44.0" prefWidth="168.0" text="Excluir" />
+      <Button fx:id="btnSalvar" layoutX="551.0" layoutY="392.0" mnemonicParsing="false" onAction="#btnSalvar_Click" prefHeight="44.0" prefWidth="168.0" text="Salvar" />
+      <TextField fx:id="txtTelefone" layoutX="833.0" layoutY="278.0" prefHeight="37.0" prefWidth="201.0" promptText="Telefone" />
+      <DatePicker fx:id="dataNasc" layoutX="1017.0" layoutY="154.0" prefHeight="37.0" prefWidth="207.0" promptText="Data de Nascimento" />
+      <TextField fx:id="txtCrm" layoutX="687.0" layoutY="154.0" prefHeight="37.0" prefWidth="201.0" promptText="CRM" />
+      <TextField fx:id="txtNomeMed" layoutX="320.0" layoutY="154.0" prefHeight="37.0" prefWidth="201.0" promptText="Nome" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="78.0" layoutX="165.0" stroke="BLACK" strokeType="INSIDE" width="1213.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="716.0" layoutX="-7.0" stroke="BLACK" strokeType="INSIDE" width="175.0" />
+      <ComboBox fx:id="cmbEspec" layoutX="464.0" layoutY="278.0" prefHeight="37.0" prefWidth="175.0" promptText="Especializacão" />
+      <ImageView fx:id="logo" fitHeight="150.0" fitWidth="200.0" layoutX="14.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0">
+         <image>
+            <Image url="@../images/logo.jpg" />
+         </image>
+      </ImageView>
+      <Label layoutX="322.0" layoutY="137.0" text="Nome:" />
+      <Label layoutX="687.0" layoutY="137.0" text="CRM:" />
+      <Label layoutX="1020.0" layoutY="137.0" text="Data de Nascimento:" />
+      <Label layoutX="833.0" layoutY="260.0" text="Telefone:" />
+      <Label layoutX="679.0" layoutY="13.0" text="Médicos" textFill="WHITE">
+         <font>
+            <Font name="SansSerif Bold" size="46.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
