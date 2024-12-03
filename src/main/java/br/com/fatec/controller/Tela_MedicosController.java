@@ -70,21 +70,22 @@ public class Tela_MedicosController implements Initializable {
     private TextField txtNomeMed;
     @FXML
     private TableView<Medico> tviewMedicos;
-    
+    @FXML
+    private ImageView logo; // logo para voltar para tela principal
     
     @FXML
     private ComboBox<Especializacao> cmbEspec;
-    @FXML
-    private ImageView logo;
+    
     
     //variaveis auxiliares
-    private ObservableList<Especializacao> listaEspecializacao =  
-            FXCollections.observableArrayList();
+private ObservableList<Especializacao> listaEspecializacao =  
+        FXCollections.observableArrayList();
     
     private MedicoDAO medicoDAO = new MedicoDAO();
     private Medico medico;
     private boolean incluindo = true;
-    private String valorSelecionado;       
+    private String valorSelecionado;
+            
     /**
      * Initializes the controller class.
      */
@@ -97,6 +98,9 @@ public class Tela_MedicosController implements Initializable {
         
         tableView_clique();
         logo.setOnMouseClicked(this::mostrarTelaPrincipal);
+        
+        aplicarMascaraCRM();
+        aplicarMascaraTelefone();
     }    
 
     @FXML
@@ -152,27 +156,30 @@ public class Tela_MedicosController implements Initializable {
         try {
             if (incluindo) { // Se a operação é de inclusão
                 if (medicoDAO.insere(medico)) {
-                    mensagem("Médico incluído com sucesso!");
-                    limparDados();
-                    tviewMedicos.setItems(preencheTabela());
+                    mensagem("Médico incluído com sucesso!"); // Ajustado para "Médico"
+                    limparDados(); // Limpa os campos após inclusão
+                    tviewMedicos.setItems(preencherTabela()); // Atualiza a tabela
                 } else {
                     mensagem("Erro na Inclusão do Médico");
                 }
             } else { // Se a operação é de alteração
                 if (medicoDAO.altera(medico)) {
-                    mensagem("Médico alterado com sucesso!");
-                    limparDados();
-                    atualizarTabela(medico);
+                    mensagem("Médico alterado com sucesso!"); // Ajustado para "Médico"
+                    limparDados(); // Limpa os campos após alteração
+                    ObservableList<Medico> listaAtualizada = preencherTabela(); // Obtenha os dados atualizados
+                    tviewMedicos.getItems().clear(); // Limpa os itens antigos
+                    tviewMedicos.setItems(listaAtualizada); // Seta a nova lista
                 } else {
                     mensagem("Erro na Alteração do Médico");
                 }
             }
         } catch (SQLException ex) {
+            // Exibe a mensagem de erro caso ocorra alguma exceção durante a gravação no banco
             mensagem("Erro na Gravação: " + ex.getMessage());
-            ex.printStackTrace();
+            ex.printStackTrace(); // Adiciona um log da exceção
         }
     }
-
+    
     public void mostrarTelaPrincipal(MouseEvent event) {
         try {
             // Troca a tela chamando o método setRoot da classe App
@@ -192,32 +199,6 @@ public class Tela_MedicosController implements Initializable {
             mensagem(ex.getMessage());
         }
             
-    }
-    
-    // Método para encontrar o índice do médico na lista (TableView)
-    private int getMedicoIndex(int idMedico) {
-        for (int i = 0; i < tviewMedicos.getItems().size(); i++) {
-            if (tviewMedicos.getItems().get(i).getIdMedico() == idMedico) {
-                return i;
-            }
-        }
-        return -1; 
-    }
-    
-        private ObservableList<Medico> preencheTabela() {
-        MedicoDAO dao = new MedicoDAO();
-        ObservableList<Medico> medicosLista = FXCollections.observableArrayList();
-
-        try {
-            medicosLista.addAll(dao.lista(""));
-        } catch (SQLException ex) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR,
-                    "Erro Preenchendo Tabela: " + ex.getMessage(),
-                    ButtonType.OK);
-            alerta.showAndWait();
-        }
-
-        return medicosLista;
     }
     
     private void mensagem(String msg) {
@@ -262,17 +243,15 @@ public class Tela_MedicosController implements Initializable {
             mensagem("Preencha todos os campos, por favor!");
             return false;
         }
-        return true;
-    }
-    
-        // Atualiza a tabela com os dados modificados de do cliente pelo ID
-    private void atualizarTabela(Medico clienteAlterado) {
-        int index = getMedicoIndex(clienteAlterado.getIdMedico());
-        if (index != -1) {
-            tviewMedicos.getItems().set(index, clienteAlterado);
-        } else {
-            mensagem("Cliente não encontrado na tabela para atualização.");
+        
+        LocalDate dataSelecionada = dataNasc.getValue();
+        LocalDate dataHoje = LocalDate.now();
+        
+        if(dataSelecionada.isAfter(dataHoje)) {
+            mensagem("A data de nascimento não pode ser posterior a de hoje!");
+            return false;
         }
+        return true;
     }
     
     private void limparDados() {
@@ -282,7 +261,8 @@ public class Tela_MedicosController implements Initializable {
         txtTelefone.setText("");
         cmbEspec.getSelectionModel().clearSelection();
         dataNasc.setValue(null);
-}
+        incluindo = true;
+    }
     
     private void fazerLigacao(){
         colNomeMed.setCellValueFactory(new PropertyValueFactory<>("nomeMedico"));
@@ -327,5 +307,49 @@ public class Tela_MedicosController implements Initializable {
         return row;
     });
     }
-        
+    
+    private void aplicarMascaraCRM() {
+        txtCrm.textProperty().addListener((observable, oldValue, newValue) -> {
+            // Remove caracteres não permitidos
+            String valorSemMascara = newValue.replaceAll("[^\\dA-Za-z]", "");
+
+            // Aplica a máscara (6 dígitos + "/" + 2 letras)
+            StringBuilder valorComMascara = new StringBuilder(valorSemMascara);
+            if (valorComMascara.length() > 6) {
+                valorComMascara.insert(6, "/");
+            }
+
+            if (valorComMascara.length() > 9) {
+                valorComMascara.setLength(9); // Limita ao tamanho máximo
+            }
+
+            // Atualiza o campo com o valor formatado
+            txtCrm.setText(valorComMascara.toString());
+        });
+    }
+    
+    private void aplicarMascaraTelefone() {
+        txtTelefone.textProperty().addListener((observable, oldValue, newValue) -> {
+            String valorSemMascara = newValue.replaceAll("[^\\d]", ""); // Apenas números
+
+            // (XX) XXXXX-XXXX
+            StringBuilder valorComMascara = new StringBuilder(valorSemMascara);
+            if (valorComMascara.length() > 2) {
+                valorComMascara.insert(0, "(");
+            }
+            if (valorComMascara.length() > 6) {
+                valorComMascara.insert(3, ") ");
+            }
+            if (valorComMascara.length() > 11) {
+                valorComMascara.insert(10, "-");
+            }
+
+            if (valorComMascara.length() > 15) {
+                valorComMascara.setLength(15); // tamanho máximo
+            }
+
+            // Atualiza o campo 
+            txtTelefone.setText(valorComMascara.toString());
+        });
+    }        
 }

@@ -35,10 +35,25 @@ public class PrincipalController implements Initializable {
     }
 
     public void mostrarTelaConsulta() {
-        /*try {
-            App.setRoot("br/com/fatec/view/Tela_Consulta");
+        try {
+            App.setRoot("br/com/fatec/view/Tela_Consultas");
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Erro ao carregar a tela de consulta", e);
-        }*/
+        }
+    }
+    
+    public void mostrarTelaEspera(){
+        try {
+            App.setRoot("br/com/fatec/view/ListaDeEspera");
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Erro ao carregar a tela de consulta", e);
+        }
+    }
+    public void mostrarTelaAvancada(){
+        try {
+            App.setRoot("br/com/fatec/view/Tela_Avancada");
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Erro ao carregar a tela de consulta", e);
+        }
     }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane id="AnchorPane" prefHeight="716.0" prefWidth="1380.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.fatec.controller.ListaDeEsperaController">
+    <stylesheets>
+        <URL value="@/br/com/fatec/view/styles/listadeespera.css" />
+    </stylesheets>
+   <children>
+      <TableView fx:id="tviewEspera" layoutX="524.0" layoutY="526.0" onMouseClicked="#tviewEspera_Click" prefHeight="200.0" prefWidth="515.0">
+         <columns>
+            <TableColumn fx:id="colId" prefWidth="129.0" text="ID" />
+            <TableColumn fx:id="colNome" prefWidth="142.0" text="Nome" />
+            <TableColumn fx:id="colCpf" prefWidth="109.0" text="CPF" />
+            <TableColumn fx:id="colPreferencial" prefWidth="135.0" text="Preferencial" />
+         </columns>
+      </TableView>
+      <Button fx:id="btnExcluir" layoutX="859.0" layoutY="402.0" mnemonicParsing="false" onAction="#btnExcluir_Click" prefHeight="44.0" prefWidth="168.0" text="Excluir" />
+      <Button fx:id="btnSalvar" layoutX="561.0" layoutY="402.0" mnemonicParsing="false" onAction="#btnSalvar_Click" prefHeight="44.0" prefWidth="168.0" text="Salvar" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="78.0" layoutX="173.0" stroke="BLACK" strokeType="INSIDE" width="1216.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="726.0" stroke="BLACK" strokeType="INSIDE" width="175.0" />
+      <TextField fx:id="txtNome" layoutX="356.0" layoutY="165.0" prefHeight="32.0" prefWidth="168.0" promptText="Nome" />
+      <TextField fx:id="txtCpf" layoutX="697.0" layoutY="165.0" prefHeight="32.0" prefWidth="168.0" promptText="CPF" />
+      <VBox layoutX="350.0" layoutY="247.0" prefHeight="136.0" prefWidth="168.0" spacing="30.0">
+         <children>
+            <RadioButton fx:id="radioPrioridade" mnemonicParsing="false" prefHeight="51.0" prefWidth="168.0" text="Prioridade">
+               <toggleGroup>
+                  <ToggleGroup fx:id="tipoPrioridade" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="radioNormal" mnemonicParsing="false" prefHeight="44.0" prefWidth="178.0" text="Normal" toggleGroup="$tipoPrioridade" />
+         </children>
+      </VBox>
+      <TextArea fx:id="txtSintomas" layoutX="1097.0" layoutY="165.0" prefHeight="200.0" prefWidth="200.0" />
+      <Button fx:id="btnPesquisar" layoutX="350.0" layoutY="100.0" mnemonicParsing="false" onAction="#btnPesquisar_Click" prefHeight="29.0" prefWidth="86.0" text="Pesquisar" />
+      <TextField fx:id="txtId" layoutX="224.0" layoutY="100.0" prefHeight="29.0" prefWidth="86.0" promptText="ID" />
+      <Label layoutX="1106.0" layoutY="148.0" text="Sintomas:" />
+      <ImageView fx:id="logo" fitHeight="150.0" fitWidth="200.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0">
+         <image>
+            <Image url="@../images/logo.jpg" />
+         </image>
+      </ImageView>
+      <Label layoutX="356.0" layoutY="147.0" text="Nome:" />
+      <Label layoutX="697.0" layoutY="149.0" text="CPF:" />
+   </children>
+</AnchorPane>

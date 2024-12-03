@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.fatec</groupId>
-    <artifactId>Projeto_Clinica_GIT</artifactId>
+    <artifactId>Projeto_Clinica_UltimaVersao</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -98,5 +98,5 @@
             </plugin>
         </plugins>
     </build>
-    <name>Projeto_Clinica_GIT</name>
+    <name>Projeto_Clinica_UltimaVersao</name>
 </project>

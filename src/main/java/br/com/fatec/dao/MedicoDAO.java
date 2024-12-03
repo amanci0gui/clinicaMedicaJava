@@ -136,7 +136,7 @@ public class MedicoDAO implements DAO<Medico> {
         
         //le o próximo regitro
         if(rs.next()) { //achou 1 registro
-            //cria o objeto proprietario
+            //cria o objeto Especializacao
             Especializacao e = new Especializacao();
             e.setIdEspec(rs.getInt("idEspec"));
             EspecializacaoDAO dao = new EspecializacaoDAO();

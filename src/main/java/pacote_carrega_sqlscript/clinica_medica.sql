@@ -1,8 +1,25 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Tempo de geração: 29/11/2024 às 18:43
+-- Versão do servidor: 10.4.32-MariaDB
+-- Versão do PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
 -- Banco de dados: `clinica_medica`
 --
-CREATE DATABASE IF NOT EXISTS `clinica_medica` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `clinica_medica`;
 
 -- --------------------------------------------------------
 
@@ -19,15 +36,6 @@ CREATE TABLE `clientes` (
   `planoConv` varchar(40) DEFAULT NULL,
   `telefone` varchar(17) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `clientes`
---
-
-INSERT INTO `clientes` (`idCliente`, `nomeCliente`, `cpf`, `dataNasc`, `convOuPart`, `planoConv`, `telefone`) VALUES
-(1, 'Guilherme', '123456', '2005-08-01', 'P', 'Não possui convênio', '1234');
-
--- --------------------------------------------------------
 
 --
 -- Estrutura para tabela `consulta`
@@ -108,6 +116,14 @@ CREATE TABLE `medico` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Despejando dados para a tabela `medico`
+--
+
+INSERT INTO `medico` (`idMedico`, `nomeMedico`, `crm`, `dataNasc`, `telefone`, `idEspec`) VALUES
+(4, 'Guilherme', '12345-6/SP', '1980-11-01', '(11) 91234-1000', 14),
+(5, 'Lucas', '98765-4/MG', '2000-11-05', '(11) 98765-4000', 13);
+
+--
 -- Índices para tabelas despejadas
 --
 
@@ -156,13 +172,13 @@ ALTER TABLE `medico`
 -- AUTO_INCREMENT de tabela `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idCliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de tabela `consulta`
 --
 ALTER TABLE `consulta`
-  MODIFY `idConsulta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idConsulta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `espec`
@@ -180,7 +196,7 @@ ALTER TABLE `horarios`
 -- AUTO_INCREMENT de tabela `medico`
 --
 ALTER TABLE `medico`
-  MODIFY `idMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idMedico` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restrições para tabelas despejadas
@@ -200,6 +216,25 @@ ALTER TABLE `consulta`
 ALTER TABLE `medico`
   ADD CONSTRAINT `medico_ibfk_1` FOREIGN KEY (`idEspec`) REFERENCES `espec` (`idEspec`);
 COMMIT;
+
+-- Remover as restrições existentes, se necessário
+ALTER TABLE `consulta` 
+  DROP FOREIGN KEY `consulta_ibfk_1`, 
+  DROP FOREIGN KEY `consulta_ibfk_2`, 
+  DROP FOREIGN KEY `consulta_ibfk_3`;
+
+ALTER TABLE `medico` 
+  DROP FOREIGN KEY `medico_ibfk_1`;
+
+-- Adicionar novamente as constraints com `ON DELETE CASCADE`
+ALTER TABLE `consulta`
+  ADD CONSTRAINT `consulta_ibfk_1` FOREIGN KEY (`idCliente`) REFERENCES `clientes` (`idCliente`) ON DELETE CASCADE,
+  ADD CONSTRAINT `consulta_ibfk_2` FOREIGN KEY (`idMedico`) REFERENCES `medico` (`idMedico`) ON DELETE CASCADE,
+  ADD CONSTRAINT `consulta_ibfk_3` FOREIGN KEY (`idHorario`) REFERENCES `horarios` (`idHorario`) ON DELETE CASCADE;
+
+ALTER TABLE `medico`
+  ADD CONSTRAINT `medico_ibfk_1` FOREIGN KEY (`idEspec`) REFERENCES `espec` (`idEspec`);
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
